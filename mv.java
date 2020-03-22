@@ -27,9 +27,14 @@ public class mv{
 
     }
 
-    public void executa(){
-
-        
+    public void read(){// corrigir essa merda
+        int c = 0;
+        while( c < Memoria.length ){
+            if(Memoria[c] == "null"){
+            System.out.println(Memoria[c]);
+            }
+            c++;
+        }
 
     }
 
@@ -171,12 +176,13 @@ public class mv{
             String linha = lerArq.readLine(); 
             while (linha != null) {
             
-              resposta[b] = linha;
+              Memoria[b] = linha;
 
               b++;
               linha = lerArq.readLine(); 
             }
-       
+
+            System.out.println("Arquivo carregado na memoria.");
             arq.close();
           } catch (IOException e) {
               System.err.printf("Erro na abertura do arquivo: %s.\n",
