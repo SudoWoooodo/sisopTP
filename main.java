@@ -19,18 +19,13 @@ public class main{
                     String nome = le.nextLine();
                     Beta.loadArquivo(nome);
                 } break;
-                case "read":{
-                    Beta.read();
+                case "situ":{
+                    Beta.situ();
                 } break;
                 case "run":{
-                    
+                    Beta.run();
                 }
             }
         }
-
-        
-        
-
-        
     }
 }

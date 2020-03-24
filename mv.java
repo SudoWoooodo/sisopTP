@@ -4,7 +4,7 @@ import java.io.*;
 public class mv{
     private String[] Memoria;
     private int PC;
-    private String[] regis = new String[7];
+    private String[] regis = new String[8];
 
     public mv(){
 
@@ -27,15 +27,88 @@ public class mv{
 
     }
 
-    public void read(){// corrigir essa merda
+    public void situ(){
+
         int c = 0;
         while( c < Memoria.length ){
-            if(Memoria[c] == "null"){
-            System.out.println(Memoria[c]);
+            if(Memoria[c] != null){
+            System.out.println(Memoria[c] + " na posicao " + c);
             }
             c++;
         }
 
+        c = 0;
+
+        while( c < regis.length){
+
+            System.out.println("Registrador: " + c + " = " + regis[c]);
+            c++;
+        }
+
+    }
+
+    public void run(){
+
+        String auxx = Memoria[PC];
+        String func = "";
+        String arg1 = "";
+        String arg2 = "";
+        String arg3 = "";
+        int i = 0;
+
+        String[] srtArray = auxx.split("[,' ']");
+
+        if (srtArray.length == 3){ //aqui da pra ver quantos args tem na linha pq cada arg ta em uma posicao do array
+            func = srtArray[0];
+            arg1 = srtArray[1];
+            arg2 = srtArray[2];
+        } else if (srtArray.length == 4){
+            func = srtArray[0];
+            arg1 = srtArray[1];
+            arg2 = srtArray[2];
+            arg3 = srtArray[3];
+        } else {
+            System.out.println("Erro na linha!");
+        }
+
+        //se for registrador ve qual o int do regis
+        
+        switch (func){
+            case "JMP": System.out.println("Função ADD"); //chamar a funcao add
+            break;
+            case "JMPI": System.out.println("Função ADD");
+            break;
+            case "JMPIG": System.out.println("Função ADD");
+            break;
+            case "JMPIL": System.out.println("Função ADD");
+            break;
+            case "JMPIE": System.out.println("Função ADD");
+            break;
+            case "ADDI": System.out.println("Função ADD");
+            break;
+            case "SUBI": System.out.println("Função ADD");
+            break;
+            case "ANDI": System.out.println("Função ADD");
+            break;
+            case "ORI": System.out.println("Função ADD");
+            break;
+            case "LDI": System.out.println("Função ADD");
+            break;
+            case "LDD": System.out.println("Função ADD");
+            break;
+            case "STD": System.out.println("Função ADD");
+            break;
+            case "ADD": {
+
+                // this.ADD(arg1, arg2);
+
+                
+
+            }
+            break;
+            default: System.out.println("Função não reconhecida!");
+        }
+        
     }
 
     public void JMP(int k){
@@ -124,11 +197,6 @@ public class mv{
 
     }
 
-    public void P1(String positions){
-
-        
-    }
-
     public String getmv(int index) {
 
         return Memoria[index];
@@ -137,12 +205,6 @@ public class mv{
     public void setmv(int index, String bytes) {
 
         Memoria[index] = bytes;
-
-    }
-
-     public void aumCount(){
-
-         PC++;
 
     }
 
