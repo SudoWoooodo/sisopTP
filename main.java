@@ -11,6 +11,13 @@ import java.util.*;
 // Sit (para verificar o status da memória e registradores)
 // Run (para rodar o arquivo carregado)
 
+// BUG: Deve-se encerrar e rodar novamente caso queira trocar de arquivo
+
+// Sugestão de fluxo comandos:
+// load
+// (informa o nome do arquivo)
+// run
+
 public class main {
     public static void main(String[] args) {
 
