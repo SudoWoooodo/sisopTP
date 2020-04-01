@@ -1,45 +1,52 @@
+// Autores: Pedro Portella, Rafael Resende e Lucas Tashan
+
 import java.util.ArrayList;
 import java.io.*;
 
-public class mv{
-    private String[] Memoria;
+// Classe do Processador, onde é feita toda execução dos programas na máquina
+// O primeiro método utilizado nessa classe é o construtor public mv
+// Depois dele é o load arquivo (no final da classe)
+
+public class mv {
     private int PC;
-    private String[] regis = new String[8];
+    private posicaoDeMemoria[] memoria;
+    private Integer[] regis = new Integer[8];
+    ArrayList<posicaoDeMemoria> programa;
+    int regisAux;
+    int regisAux1;
+    String func;
+    
 
-    public mv(){
+    // Onde é criado o array da memória e populado de objetos com atributos nulos
+    // Tambem é criado o array de registradores
+    public mv() {
 
-        Memoria = new String[1024];
+        memoria = new posicaoDeMemoria[1024];
+        for (int k = 0; k < memoria.length; k++) {
+            memoria[k] = new posicaoDeMemoria(null, null, null, -99);
+        }
         PC = 0;
-        for(int i = 0; i < regis.length; i++){ //inicia os registradores
+        for (int i = 0; i < regis.length; i++) {
 
-            regis[i] = "0";
+            regis[i] = 0;
         }
 
     }
 
-    public int calculaFibo(int n){ // calcula o "n-ésimo" numero de fibo
-
-        if(n == 1 || n == 0){
-            return 1;
-        }  else
-
-        return  calculaFibo(n - 1) + calculaFibo(n - 2);
-
-    }
-
-    public void situ(){
+    // Metodo criado para visualização de todas posições de memória e registradores
+    public void sit() {
 
         int c = 0;
-        while( c < Memoria.length ){
-            if(Memoria[c] != null){
-            System.out.println(Memoria[c] + " na posicao " + c);
+        while (c < memoria.length) {
+            if (memoria[c] != null) {
+                System.out.println(memoria[c] + " na posicao " + c);
             }
             c++;
         }
 
         c = 0;
 
-        while( c < regis.length){
+        while (c < regis.length) {
 
             System.out.println("Registrador: " + c + " = " + regis[c]);
             c++;
@@ -47,186 +54,224 @@ public class mv{
 
     }
 
-    public void run(){
+    // Metodo utilizado para identificar a chamar a função correta de acordo com seu
+    // opcode
+    public int mapa(String func) {
 
-        String auxx = Memoria[PC];
-        String func = "";
-        String arg1 = "";
-        String arg2 = "";
-        String arg3 = "";
-        int i = 0;
-
-        String[] srtArray = auxx.split("[,' ']");
-
-        if (srtArray.length == 3){ //aqui da pra ver quantos args tem na linha pq cada arg ta em uma posicao do array
-            func = srtArray[0];
-            arg1 = srtArray[1];
-            arg2 = srtArray[2];
-        } else if (srtArray.length == 4){
-            func = srtArray[0];
-            arg1 = srtArray[1];
-            arg2 = srtArray[2];
-            arg3 = srtArray[3];
-        } else {
-            System.out.println("Erro na linha!");
+        switch (func) {
+            case "JMP":
+                JMP(memoria[PC].parametro);
+                return PC;
+            case "JMPI":
+                JMPI(regis[regisAux]);
+                return PC;
+            case "JMPIG":
+                JMPIG(regis[regisAux], regis[regisAux1]);
+                return PC;
+            case "JMPIL":
+                JMPIL(regis[regisAux], regis[regisAux1]);
+                return PC;
+            case "JMPIE":
+                JMPIE(regis[regisAux], regis[regisAux1]);
+                return PC;
+            case "ADDI":
+                ADDI(regisAux, memoria[PC].parametro);
+                break;
+            case "SUBI":
+                SUBI(regisAux, memoria[PC].parametro);
+                break;
+            case "LDI":
+                LDI(regisAux, memoria[PC].parametro);
+                break;
+            case "LDD":
+                LDD(regisAux, memoria[PC].parametro);
+                break;
+            case "STD":
+                STD(memoria[PC].parametro, regisAux);
+                break;
+            case "ADD":
+                ADD(regisAux, regisAux1);
+                break;
+            case "SUB":
+                SUB(regisAux, regisAux1);
+                break;
+            case "MULT":
+                MULT(regisAux, regisAux1);
+                break;
+            case "LDX":
+                LDX(regisAux, regisAux1);
+                break;
+            case "STX":
+                STX(regisAux, regisAux1);
+                break;
+            case "STOP": {
+                STOP();
+                return PC;
+            }
+            default:
+                System.out.println("Função não reconhecida!");
         }
 
-        //se for registrador ve qual o int do regis
-        
-        switch (func){
-            case "JMP": System.out.println("Função ADD"); //chamar a funcao add
-            break;
-            case "JMPI": System.out.println("Função ADD");
-            break;
-            case "JMPIG": System.out.println("Função ADD");
-            break;
-            case "JMPIL": System.out.println("Função ADD");
-            break;
-            case "JMPIE": System.out.println("Função ADD");
-            break;
-            case "ADDI": System.out.println("Função ADD");
-            break;
-            case "SUBI": System.out.println("Função ADD");
-            break;
-            case "ANDI": System.out.println("Função ADD");
-            break;
-            case "ORI": System.out.println("Função ADD");
-            break;
-            case "LDI": System.out.println("Função ADD");
-            break;
-            case "LDD": System.out.println("Função ADD");
-            break;
-            case "STD": System.out.println("Função ADD");
-            break;
-            case "ADD": {
+        return PC + 1;
 
-                // this.ADD(arg1, arg2);
+    }
 
-                
+    // Metodo principal da classe e é utilizado para executar o loop que fica lendo
+    // as linhas do programa
+    // A cada linha lida, ele faz o tratamento devido do opcode, registradores e
+    // parametros
+    // Em seguida chama o método que trata as funções dos opcodes que está logo
+    // acima
+    public void run() {
+
+        while (PC != 2000) {
+            func = memoria[PC].opcode;
+
+            if (memoria[PC].registrador1 != null) {
+                String aux = memoria[PC].registrador1.substring(1);
+                regisAux = Integer.parseInt(aux);
 
             }
-            break;
-            default: System.out.println("Função não reconhecida!");
+            if (memoria[PC].registrador2 != null) {
+                String aux1 = memoria[PC].registrador2.substring(1);
+                regisAux1 = Integer.parseInt(aux1);
+
+            }
+            
+            PC = mapa(func);
         }
-        
+
+        System.out.println("\n");
+        System.out.println("Resposta na memória: ");
+        System.out.println("\n");
+        for (int i = programa.size(); i < memoria.length; i++) {
+            if (memoria[i].parametro != -99) {
+                System.out.println(memoria[i].getParametro());
+            }
+        }
+
     }
 
-    public void JMP(int k){
+    public void JMP(int k) {
 
         PC = k;
-    }
-
-    public void JMPI(int RS){
-
-        PC = Integer.parseInt(regis[RS]);
 
     }
 
-    public void JMPIG(int RS, int RC){
+    public void JMPI(int RS) {
 
-        if(RC > 0){
-            PC = Integer.parseInt(regis[RS]);
-        } else PC = PC + 1;
+        PC = RS;
 
     }
 
-    public void JMPIL(int RS, int RC){
+    public void JMPIG(int RS, int RC) {
 
-        if(RC < 0){
-            PC = Integer.parseInt(regis[RS]);
-        } else PC = PC + 1;
-
-    }
-
-    public void JMPIE(int RS, int RC){
-
-        if(RC == 0){
-            PC = Integer.parseInt(regis[RS]);
-        } else PC = PC + 1;
+        if (RC > 0) {
+            PC = RS;
+        } else
+            PC = PC + 1;
 
     }
 
-    public void ADDI(int RD, int k){
+    public void JMPIL(int RS, int RC) {
 
-        int aux = Integer.parseInt(regis[RD]) + k;
-        regis[RD] = Integer.toString(aux);
-
-    }
-
-    public void SUBI(int RD, int k){
-
-        int aux = Integer.parseInt(regis[RD]) - k;
-        regis[RD] = Integer.toString(aux);
+        if (RC < 0) {
+            PC = RS;
+        } else
+            PC = PC + 1;
 
     }
 
-    public void ANDI(int RD, boolean k){
+    public void JMPIE(int RS, int RC) {
 
-        boolean aux = Boolean.parseBoolean(regis[RD]) && k; 
-        regis[RD] = Boolean.toString(aux);
+        if (RC == 0) {
+            PC = RS;
+        } else
+            PC = PC + 1;
 
     }
 
-    public void ORI(int RD, boolean k){
+    public void ADDI(int RD, int k) {
 
-        boolean aux = Boolean.parseBoolean(regis[RD]) || k; 
-        regis[RD] = Boolean.toString(aux);
+        regis[RD] = regis[RD] + k;
+
     }
 
-    public void LDI(int RD, String k){
-        
+    public void SUBI(int RD, int k) {
+
+        regis[RD] = regis[RD] - k;
+
+    }
+
+    public void LDI(int RD, int k) {
+
         regis[RD] = k;
 
     }
 
-    public void LDD(int RD, String A){
+    public void LDD(int RD, int A) {
 
-        //recebe posição da memoria do A
-
-    }
-
-    public void STD(int A, int RS){
-
-        regis[A] = regis[RS];
+        regis[RD] = memoria[A].parametro;
 
     }
 
-    public void ADD(int RD, int RS){
+    public void STD(int A, int RS) {
 
-        regis[RD] = regis[RD] + RS; //checkar
-
-    }
-
-    public String getmv(int index) {
-
-        return Memoria[index];
-    }
-
-    public void setmv(int index, String bytes) {
-
-        Memoria[index] = bytes;
+        memoria[A].parametro = regis[RS];
 
     }
 
-    public String getRegis(int r) {
-         
-        return regis[r];
-    
-    }
+    public void ADD(int RD, int RS) {
 
-    public void setRegis(int r, String valor) {
-
-        regis[r] = valor;
+        regis[RD] = regis[RD] + regis[RS];
 
     }
 
-    public String[] loadArquivo(String nome){ // le o arquivo linha a linha
+    public void SUB(int RD, int RS) {
+
+        regis[RD] = regis[RD] - regis[RS];
+
+    }
+
+    public void MULT(int RD, int RS) {
+
+        regis[RD] = regis[RD] * regis[RS];
+
+    }
+
+    public void LDX(int RD, int RS) {
+
+        int valor = regis[RS];
+
+        regis[RD] = memoria[valor].parametro;
+
+    }
+
+    public void STX(int RD, int RS) {
+
+        int valor = regis[RD];
+
+        memoria[valor].parametro = regis[RS];
+
+    }
+
+    public void STOP() {
+
+        PC = 2000;
+
+    }
+
+    // Método que faz a leitura do arquivo e o tratamento inicial do texto
+    // Ele que separa e identifica o que é string, registrador, parametro, int,
+    // opcode, etc
+
+    public ArrayList<posicaoDeMemoria> loadArquivo(String nome) {
 
         int a = nome.length();
-        int b = 0;
-        String[] resposta = new String[1024];
+        programa = new ArrayList<>();
 
-        if(nome.charAt(a - 1) != 't' || nome.charAt(a - 2) != 'x' || nome.charAt(a -3) != 't' || nome.charAt(a - 4) != '.'){
+        if (nome.charAt(a - 1) != 't' || nome.charAt(a - 2) != 'x' || nome.charAt(a - 3) != 't'
+                || nome.charAt(a - 4) != '.') {
 
             nome = nome + ".txt";
         }
@@ -234,26 +279,67 @@ public class mv{
         try {
             FileReader arq = new FileReader(nome);
             BufferedReader lerArq = new BufferedReader(arq);
-       
-            String linha = lerArq.readLine(); 
-            while (linha != null) {
-            
-              Memoria[b] = linha;
 
-              b++;
-              linha = lerArq.readLine(); 
+            String linha = lerArq.readLine();
+            
+            while (linha != null) {
+                
+                // Array como estrutura de dados auxiliar para splitar cada pedaço lido da linha
+                // Podendo ser (opcode, registradores ou parametros)
+                
+                String[] strArray = linha.split("[,' ']");     
+                    
+
+                // Utilização de mais uma estrutura auxiliar (ArrayList) que pega esses pedaços
+                // splitados
+                // do array declarado logo acima e instancia objetos da classe posicaoDeMemoria
+                // pra passar isso tudo para o Array de memoria em seguida
+                if (strArray.length == 1) {
+                    posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], null, null, -99);
+                    programa.add(line);
+                } else if (strArray.length == 2) {
+                    if (strArray[1].charAt(0) == 'r') {
+                        posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], strArray[1], null, -99);
+                        programa.add(line);
+                    } else {
+                        int castInt = Integer.parseInt(strArray[1]);
+                        posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], castInt, null);
+                        programa.add(line);
+                    }
+                } else if (strArray.length == 3) {
+                    if (strArray[1].charAt(0) == 'r' && strArray[2].charAt(0) == 'r') {
+                        posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], strArray[1], strArray[2], -99);
+                        programa.add(line);
+                    } else if (strArray[1].charAt(0) == 'r' && strArray[2].charAt(0) != 'r') {
+                        int castInt = Integer.parseInt(strArray[2]);
+                        posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], strArray[1], castInt);
+                        programa.add(line);
+                    } else if (strArray[1].charAt(0) != 'r' && strArray[2].charAt(0) == 'r') {
+                        int castInt = Integer.parseInt(strArray[1]);
+                        posicaoDeMemoria line = new posicaoDeMemoria(strArray[0], castInt, strArray[2]);
+                        programa.add(line);
+                    }
+
+                } else {
+                    System.out.println("Erro na linha!");
+                }
+
+                linha = lerArq.readLine();
             }
 
             System.out.println("Arquivo carregado na memoria.");
             arq.close();
-          } catch (IOException e) {
-              System.err.printf("Erro na abertura do arquivo: %s.\n",
-                e.getMessage());
-          }
+        } catch (IOException e) {
+            System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
+        }
 
-          return resposta;
+        // População da Memoria com os objetos criados no ArrayList
+        for (int i = 0; i < programa.size(); i++) {
+            memoria[i] = programa.get(i);
+        }
+
+        return programa;
 
     }
-
 
 }

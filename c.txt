@@ -1,3 +1,0 @@
-ADD r1,r2
-cu
-pica
