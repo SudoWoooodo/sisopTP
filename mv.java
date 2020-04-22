@@ -7,15 +7,15 @@ import java.io.*;
 // O primeiro método utilizado nessa classe é o construtor public mv
 // Depois dele é o load arquivo (no final da classe)
 
-public class mv {
+public class mv extends gerenciaDeMemoria{
     private int PC;
+    private int count;
     private posicaoDeMemoria[] memoria;
     private Integer[] regis = new Integer[8];
     ArrayList<posicaoDeMemoria> programa;
     int regisAux;
     int regisAux1;
     String func;
-    
 
     // Onde é criado o array da memória e populado de objetos com atributos nulos
     // Tambem é criado o array de registradores
@@ -106,6 +106,7 @@ public class mv {
                 break;
             case "STOP": {
                 STOP();
+                System.out.println(count);
                 return PC;
             }
             default:
@@ -122,7 +123,10 @@ public class mv {
     // parametros
     // Em seguida chama o método que trata as funções dos opcodes que está logo
     // acima
-    public void run() {
+
+
+    public void run() { //roda uma particicao, recebe uma, 20 vezes-- colocar num metodo maior que rode as 4 em sequencia
+        //while count < 20
 
         while (PC != 2000) {
             func = memoria[PC].opcode;
@@ -142,7 +146,7 @@ public class mv {
         }
 
         System.out.println("\n");
-        System.out.println("Resposta na memória: ");
+        System.out.println("Resposta na memória: " + count);
         System.out.println("\n");
         for (int i = programa.size(); i < memoria.length; i++) {
             if (memoria[i].parametro != -99) {
@@ -152,15 +156,21 @@ public class mv {
 
     }
 
+    public void erase(){
+        count = 0;
+    }
+
     public void JMP(int k) {
 
         PC = k;
+        count++;
 
     }
 
     public void JMPI(int RS) {
 
         PC = RS;
+        count++;
 
     }
 
@@ -171,6 +181,7 @@ public class mv {
         } else
             PC = PC + 1;
 
+            count++;
     }
 
     public void JMPIL(int RS, int RC) {
@@ -179,6 +190,7 @@ public class mv {
             PC = RS;
         } else
             PC = PC + 1;
+            count++;
 
     }
 
@@ -188,54 +200,63 @@ public class mv {
             PC = RS;
         } else
             PC = PC + 1;
+            count++;
 
     }
 
     public void ADDI(int RD, int k) {
 
         regis[RD] = regis[RD] + k;
+        count++;
 
     }
 
     public void SUBI(int RD, int k) {
 
         regis[RD] = regis[RD] - k;
+        count++;
 
     }
 
     public void LDI(int RD, int k) {
 
         regis[RD] = k;
+        count++;
 
     }
 
     public void LDD(int RD, int A) {
 
         regis[RD] = memoria[A].parametro;
+        count++;
 
     }
 
     public void STD(int A, int RS) {
 
         memoria[A].parametro = regis[RS];
+        count++;
 
     }
 
     public void ADD(int RD, int RS) {
 
         regis[RD] = regis[RD] + regis[RS];
+        count++;
 
     }
 
     public void SUB(int RD, int RS) {
 
         regis[RD] = regis[RD] - regis[RS];
+        count++;
 
     }
 
     public void MULT(int RD, int RS) {
 
         regis[RD] = regis[RD] * regis[RS];
+        count++;
 
     }
 
@@ -245,6 +266,8 @@ public class mv {
 
         regis[RD] = memoria[valor].parametro;
 
+        count++;
+
     }
 
     public void STX(int RD, int RS) {
@@ -253,11 +276,13 @@ public class mv {
 
         memoria[valor].parametro = regis[RS];
 
+        count++;
     }
 
     public void STOP() {
 
         PC = 2000;
+        count++;
 
     }
 
