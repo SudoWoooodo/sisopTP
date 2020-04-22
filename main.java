@@ -11,7 +11,7 @@ import java.util.*;
 // Sit (para verificar o status da memória e registradores)
 // Run (para rodar o arquivo carregado)
 
-// BUG: Deve-se encerrar e rodar novamente caso queira trocar de arquivo
+// NOBUG: Deve-se encerrar e rodar novamente caso queira trocar de arquivo -> RESOLVIDO
 
 // Sugestão de fluxo comandos:
 // load
@@ -29,27 +29,43 @@ public class main {
             System.out.println("Escutando comandos:");
             String resposta = le.nextLine();
             switch (resposta) {
+                
                 case "quit": {
                     i++;
-                }
-                    break;
+                } break;
+                    
                 case "load": {
                     System.out.printf("Informe o nome de arquivo texto:\n");
                     String nome = le.nextLine();
-                    Beta.loadArquivo(nome);
-                }
-                    break;
+                    System.out.printf("Informe em que parte da memoria gostaria de alocar(1 a 4):\n");
+                    int part = le.nextInt();
+                    Beta.loadArquivo(nome, part);
+                } break;
+                    
                 case "sit": {
-                    Beta.sit();
-                }
-                    break;
-                case "run": {
-                    Beta.run();
-                }
-                case "help":{
+                    System.out.println("Qual parte?");
+                    Beta.sit(le.nextInt());
+                } break;
+                    
+                case "runs":{
+                    System.out.println("Digite a particao:");
+                    int nome = le.nextInt();
+                    Beta.runSeparate(nome);
+                } break;           
+
+                case "countdown":{
                     Beta.erase();
-                }
-            }
+                } break;
+                    
+                case "clear":{
+                    Beta.clearData();
+                } break; 
+
+                //default:{
+                    //System.out.println("Esrro");
+                //} break;
+                    
+            } 
         }
     }
 }

@@ -7,15 +7,20 @@ import java.io.*;
 // O primeiro método utilizado nessa classe é o construtor public mv
 // Depois dele é o load arquivo (no final da classe)
 
-public class mv extends gerenciaDeMemoria{
-    private int PC;
-    private int count;
-    private posicaoDeMemoria[] memoria;
+public class mv{
+    protected int PC;
+    protected int count;
+    protected posicaoDeMemoria[] memoria;
     private Integer[] regis = new Integer[8];
     ArrayList<posicaoDeMemoria> programa;
     int regisAux;
     int regisAux1;
     String func;
+
+    gerenciaDeMemoria c1 = new gerenciaDeMemoria(0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    gerenciaDeMemoria c2 = new gerenciaDeMemoria(1, 256, 511, 256, 0, 0, 0, 0, 0, 0, 0, 0);
+    gerenciaDeMemoria c3 = new gerenciaDeMemoria(2, 512, 767, 512, 0, 0, 0, 0, 0, 0, 0, 0);
+    gerenciaDeMemoria c4 = new gerenciaDeMemoria(3, 768, 1023, 768, 0, 0, 0, 0, 0, 0, 0, 0);
 
     // Onde é criado o array da memória e populado de objetos com atributos nulos
     // Tambem é criado o array de registradores
@@ -34,13 +39,19 @@ public class mv extends gerenciaDeMemoria{
     }
 
     // Metodo criado para visualização de todas posições de memória e registradores
-    public void sit() {
+    public void sit(int x) {
 
         int c = 0;
-        while (c < memoria.length) {
+        int jonas = 0;
+        if(x == 2){c = 256;}
+        if(x == 3){c = 512;}
+        if(x == 4){c = 768;}
+
+        while (jonas < 256) {
             if (memoria[c] != null) {
                 System.out.println(memoria[c] + " na posicao " + c);
             }
+            jonas++;
             c++;
         }
 
@@ -54,25 +65,37 @@ public class mv extends gerenciaDeMemoria{
 
     }
 
+    public void clearData(){
+
+        for (int k = 0; k < memoria.length; k++) {
+            memoria[k] = new posicaoDeMemoria(null, null, null, -99);
+        }
+        PC = 0;
+        for (int i = 0; i < regis.length; i++) {
+
+            regis[i] = 0;
+        }
+    }
+
     // Metodo utilizado para identificar a chamar a função correta de acordo com seu
     // opcode
-    public int mapa(String func) {
+    public int mapa(String func, int part) {
 
         switch (func) {
             case "JMP":
-                JMP(memoria[PC].parametro);
+                JMP(memoria[PC].parametro, part);
                 return PC;
             case "JMPI":
-                JMPI(regis[regisAux]);
+                JMPI(regis[regisAux], part);
                 return PC;
             case "JMPIG":
-                JMPIG(regis[regisAux], regis[regisAux1]);
+                JMPIG(regis[regisAux], regis[regisAux1], part);
                 return PC;
             case "JMPIL":
-                JMPIL(regis[regisAux], regis[regisAux1]);
+                JMPIL(regis[regisAux], regis[regisAux1], part);
                 return PC;
             case "JMPIE":
-                JMPIE(regis[regisAux], regis[regisAux1]);
+                JMPIE(regis[regisAux], regis[regisAux1], part);
                 return PC;
             case "ADDI":
                 ADDI(regisAux, memoria[PC].parametro);
@@ -106,7 +129,6 @@ public class mv extends gerenciaDeMemoria{
                 break;
             case "STOP": {
                 STOP();
-                System.out.println(count);
                 return PC;
             }
             default:
@@ -124,80 +146,187 @@ public class mv extends gerenciaDeMemoria{
     // Em seguida chama o método que trata as funções dos opcodes que está logo
     // acima
 
+    public void runSeparate(int part){
+        
+        erase();
+        PC = tradutor(PC, part);
 
-    public void run() { //roda uma particicao, recebe uma, 20 vezes-- colocar num metodo maior que rode as 4 em sequencia
-        //while count < 20
+                switch(part){
+                    case 1:{
+                        PC = c1.getSafe();
+                        regis[0] = c1.getr0();
+                        regis[1] = c1.getr1();
+                        regis[2] = c1.getr2();
+                        regis[3] = c1.getr3();
+                        regis[4] = c1.getr4();
+                        regis[5] = c1.getr5();
+                        regis[6] = c1.getr6();
+                        regis[7] = c1.getr7();
+                    } break;
+                    case 2:{
+                        PC = c2.getSafe();
+                        regis[0] = c2.getr0();
+                        regis[1] = c2.getr1();
+                        regis[2] = c2.getr2();
+                        regis[3] = c2.getr3();
+                        regis[4] = c2.getr4();
+                        regis[5] = c2.getr5();
+                        regis[6] = c2.getr6();
+                        regis[7] = c2.getr7();
+                    } break;
+                    case 3:{
+                        PC = c3.getSafe();
+                        regis[0] = c3.getr0();
+                        regis[1] = c3.getr1();
+                        regis[2] = c3.getr2();
+                        regis[3] = c3.getr3();
+                        regis[4] = c3.getr4();
+                        regis[5] = c3.getr5();
+                        regis[6] = c3.getr6();
+                        regis[7] = c3.getr7();
+                    } break;
+                    case 4:{
+                        PC = c4.getSafe();
+                        regis[0] = c4.getr0();
+                        regis[1] = c4.getr1();
+                        regis[2] = c4.getr2();
+                        regis[3] = c4.getr3();
+                        regis[4] = c4.getr4();
+                        regis[5] = c4.getr5();
+                        regis[6] = c4.getr6();
+                        regis[7] = c4.getr7();
+                    } break;
+                }
+                
+                
+                while (PC != 2000 && count < 20) {
+                    
+                    System.out.println(PC);
+                    System.out.println(count);
+                    func = memoria[PC].opcode;
+        
+                    if (memoria[PC].registrador1 != null) {
+                        String aux = memoria[PC].registrador1.substring(1);
+                        regisAux = Integer.parseInt(aux);
+        
+                    }
+                    if (memoria[PC].registrador2 != null) {
+                        String aux1 = memoria[PC].registrador2.substring(1);
+                        regisAux1 = Integer.parseInt(aux1);
+        
+                    }
+                    
+                    PC = mapa(func, part);
+                }
+                
+                switch(part){
+                    case 1:{
+                        c1.setSafe(PC);
+                        c1.setr0(regis[0]);
+                        c1.setr1(regis[1]);
+                        c1.setr2(regis[2]);
+                        c1.setr3(regis[3]);
+                        c1.setr4(regis[4]);
+                        c1.setr5(regis[5]);
+                        c1.setr6(regis[6]);
+                        c1.setr7(regis[7]);
+                    } break;
+                    case 2:{
+                        c2.setSafe(PC);
+                        c2.setr0(regis[0]);
+                        c2.setr1(regis[1]);
+                        c2.setr2(regis[2]);
+                        c2.setr3(regis[3]);
+                        c2.setr4(regis[4]);
+                        c2.setr5(regis[5]);
+                        c2.setr6(regis[6]);
+                        c2.setr7(regis[7]);
+                    } break;
+                    case 3:{
+                        c3.setSafe(PC);
+                        c3.setr0(regis[0]);
+                        c3.setr1(regis[1]);
+                        c3.setr2(regis[2]);
+                        c3.setr3(regis[3]);
+                        c3.setr4(regis[4]);
+                        c3.setr5(regis[5]);
+                        c3.setr6(regis[6]);
+                        c3.setr7(regis[7]);
+                    } break;
+                    case 4:{
+                        c4.setSafe(PC);
+                        c4.setr0(regis[0]);
+                        c4.setr1(regis[1]);
+                        c4.setr2(regis[2]);
+                        c4.setr3(regis[3]);
+                        c4.setr4(regis[4]);
+                        c4.setr5(regis[5]);
+                        c4.setr6(regis[6]);
+                        c4.setr7(regis[7]);
+                    } break;
+                }
 
-        while (PC != 2000) {
-            func = memoria[PC].opcode;
 
-            if (memoria[PC].registrador1 != null) {
-                String aux = memoria[PC].registrador1.substring(1);
-                regisAux = Integer.parseInt(aux);
 
-            }
-            if (memoria[PC].registrador2 != null) {
-                String aux1 = memoria[PC].registrador2.substring(1);
-                regisAux1 = Integer.parseInt(aux1);
 
-            }
-            
-            PC = mapa(func);
-        }
-
-        System.out.println("\n");
-        System.out.println("Resposta na memória: " + count);
-        System.out.println("\n");
-        for (int i = programa.size(); i < memoria.length; i++) {
-            if (memoria[i].parametro != -99) {
-                System.out.println(memoria[i].getParametro());
-            }
-        }
-
+                //System.out.println("\n");
+                //System.out.println("Resposta na memória: " + count);
+                //System.out.println("\n");
+                //for (int i = programa.size(); i < memoria.length; i++) {
+                 //   if (memoria[i].parametro != -99) {
+                 //       System.out.println(memoria[i].getParametro());
+                  //  }
+              //  }
     }
 
     public void erase(){
         count = 0;
+        PC = 0;
     }
 
-    public void JMP(int k) {
+    public void JMP(int k, int part) {
 
         PC = k;
+        PC = tradutor(PC, part);
         count++;
 
     }
 
-    public void JMPI(int RS) {
+    public void JMPI(int RS, int part) {
 
         PC = RS;
+        PC = tradutor(PC, part);
         count++;
 
     }
 
-    public void JMPIG(int RS, int RC) {
+    public void JMPIG(int RS, int RC, int part) {
 
         if (RC > 0) {
             PC = RS;
+            PC = tradutor(PC, part);
         } else
             PC = PC + 1;
 
             count++;
     }
 
-    public void JMPIL(int RS, int RC) {
+    public void JMPIL(int RS, int RC, int part) {
 
         if (RC < 0) {
             PC = RS;
+            PC = tradutor(PC, part);
         } else
             PC = PC + 1;
             count++;
 
     }
 
-    public void JMPIE(int RS, int RC) {
+    public void JMPIE(int RS, int RC, int part) {
 
         if (RC == 0) {
             PC = RS;
+            PC = tradutor(PC, part);
         } else
             PC = PC + 1;
             count++;
@@ -286,11 +415,41 @@ public class mv extends gerenciaDeMemoria{
 
     }
 
+    public int tradutor(int num, int part){
+
+        int toma = 0;
+
+        switch(part){
+            case 1:{
+                toma = num;
+            } break;
+                
+            case 2:{
+                toma = num + 256;
+            } break;
+
+            case 3:{
+                toma = num + 512;
+            } break;
+
+            case 4:{
+                toma = num + 768;
+            } break;
+
+            default:{
+                System.out.println("vai toma no cu");
+            }
+        }
+
+        return toma;
+
+    }
+
     // Método que faz a leitura do arquivo e o tratamento inicial do texto
     // Ele que separa e identifica o que é string, registrador, parametro, int,
     // opcode, etc
 
-    public ArrayList<posicaoDeMemoria> loadArquivo(String nome) {
+    public void loadArquivo(String nome, int part) {
 
         int a = nome.length();
         programa = new ArrayList<>();
@@ -352,18 +511,46 @@ public class mv extends gerenciaDeMemoria{
                 linha = lerArq.readLine();
             }
 
-            System.out.println("Arquivo carregado na memoria.");
+            
             arq.close();
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
 
         // População da Memoria com os objetos criados no ArrayList
-        for (int i = 0; i < programa.size(); i++) {
-            memoria[i] = programa.get(i);
+        switch(part){
+            case 1:{
+                for (int i = 0; i < programa.size(); i++) {
+                    memoria[i] = programa.get(i);
+                }
+                System.out.println("Arquivo carregado na memoria.");
+            } break;
+            case 2:{
+                for (int i = 0; i < programa.size(); i++) {
+                    int c = tradutor(i, part);
+                    memoria[c] = programa.get(i);
+                }
+                System.out.println("Arquivo carregado na memoria.");
+            } break;
+            case 3:{
+                for (int i = 0; i < programa.size(); i++) {
+                    int c = tradutor(i, part);
+                    memoria[c] = programa.get(i);
+                }
+                System.out.println("Arquivo carregado na memoria.");
+            } break;
+            case 4:{
+                for (int i = 0; i < programa.size(); i++) {
+                    int c = tradutor(i, part);
+                    memoria[c] = programa.get(i);
+                }
+                System.out.println("Arquivo carregado na memoria.");
+            } break;
+            default:{
+                System.out.println("Não foi possivel carregar o programa na memoria, por favor escolha uma particao valida.");
+            } break;
         }
-
-        return programa;
+        
 
     }
 
