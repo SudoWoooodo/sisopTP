@@ -72,30 +72,3 @@ public class main {
         }
     }
 }
-
-
-// O que temos?
-
-// main.java
-    //Arquivo responsavel pelo shell (ele que carrega arquivos e que roda a CPU)
-
-// mv.java
-    //Arquivo correspondente a CPU (onde é criada e caregada a memória, e feita toda logica dos programas)
-
-//posicaoDeMemoria.java
-    //Arquivo criado para construir a memória
-
-//Devemos implementar:
-
-//  Gerencia de Memoria
-    // posicaoDeMemoria [1024] memoria -> particoes [2014] memoria (particoes que ocupam pedaços da memoria)
-    // Criação da memória e carregamento da memória
-
-//  Gerencia de Processos
-    // Criar uma fila de processos (que vão ser as partições ocupadas) e rodar 20 instruções de cada um, um por vez
-    // necessidade de guardar os status de cada um deles a cada fim de execução e colocar pro final da fila
-
-    // Teremos toda a estrutura necessária da mv para cada processo (8 registradores, a partição de memória)
-    //  2 registradores extras que dirão o inicio e fim da partição
-
-    // OBS: Implementar um tradutor de memória (arrumar conforme a partição que está sendo usada)

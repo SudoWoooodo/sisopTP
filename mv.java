@@ -147,18 +147,26 @@ public class mv{
         while(c1.getSafe() + c2.getSafe() + c3.getSafe() + c4.getSafe() != 8000 ){ 
 
             if(c1.getOcup() == 1){
+                System.out.println("\n");
+                System.out.println("Running thread 1: ");
                 runSeparate(1);
             } else c1.setSafe(2000);
 
             if(c2.getOcup() == 1){
+                System.out.println("\n");
+                System.out.println("Running thread 2: ");
                 runSeparate(2);
             } else c2.setSafe(2000);
 
             if(c3.getOcup() == 1){
+                System.out.println("\n");
+                System.out.println("Running thread 3: ");
                 runSeparate(3);
             } else c3.setSafe(2000);
 
             if(c4.getOcup() == 1){
+                System.out.println("\n");
+                System.out.println("Running thread 4: ");
                 runSeparate(4);
             } else c4.setSafe(2000);
         }
@@ -218,11 +226,14 @@ public class mv{
                     } break;
                 }
                 
+                if (PC == 2000){
+                    System.out.println("Thread Finished!");
+                }
                 
                 while (PC != 2000 && count <= 20) {
                     
-                    System.out.println(PC);
-                    System.out.println(count);
+                    System.out.println("PC: " + PC);
+                    // System.out.println("i: " + count);     //Descomente essa linha se quiser ver o número de iterações por thread
                     func = memoria[PC].opcode;
         
                     if (memoria[PC].registrador1 != null) {
