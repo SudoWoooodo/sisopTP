@@ -27,8 +27,7 @@ public class main {
 
         while (i == 0) {
             System.out.println("Escutando comandos:");
-            String resposta = le.nextLine();
-            switch (resposta) {
+            switch (le.nextLine()) {
                 
                 case "quit": {
                     i++;
@@ -46,6 +45,10 @@ public class main {
                     System.out.println("Qual parte?");
                     Beta.sit(le.nextInt());
                 } break;
+
+                case "run":{
+                    Beta.runAll();
+                } break;
                     
                 case "runs":{
                     System.out.println("Digite a particao:");
@@ -62,7 +65,7 @@ public class main {
                 } break; 
 
                 //default:{
-                    //System.out.println("Esrro");
+                //System.out.println("Erro");
                 //} break;
                     
             } 

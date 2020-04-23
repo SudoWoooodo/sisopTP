@@ -17,10 +17,11 @@ public class mv{
     int regisAux1;
     String func;
 
-    gerenciaDeMemoria c1 = new gerenciaDeMemoria(0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    gerenciaDeMemoria c2 = new gerenciaDeMemoria(1, 256, 511, 256, 0, 0, 0, 0, 0, 0, 0, 0);
-    gerenciaDeMemoria c3 = new gerenciaDeMemoria(2, 512, 767, 512, 0, 0, 0, 0, 0, 0, 0, 0);
-    gerenciaDeMemoria c4 = new gerenciaDeMemoria(3, 768, 1023, 768, 0, 0, 0, 0, 0, 0, 0, 0);
+    //Cria as 4 partições
+    gerenciaDeMemoria c1 = new gerenciaDeMemoria(0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); 
+    gerenciaDeMemoria c2 = new gerenciaDeMemoria(1, 256, 511, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    gerenciaDeMemoria c3 = new gerenciaDeMemoria(2, 512, 767, 512, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    gerenciaDeMemoria c4 = new gerenciaDeMemoria(3, 768, 1023, 768, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     // Onde é criado o array da memória e populado de objetos com atributos nulos
     // Tambem é criado o array de registradores
@@ -38,7 +39,7 @@ public class mv{
 
     }
 
-    // Metodo criado para visualização de todas posições de memória e registradores
+    // Metodo criado para visualização de todas posições de memória e registradores a partir de uma posição desejada
     public void sit(int x) {
 
         int c = 0;
@@ -56,15 +57,9 @@ public class mv{
         }
 
         c = 0;
-
-        while (c < regis.length) {
-
-            System.out.println("Registrador: " + c + " = " + regis[c]);
-            c++;
-        }
-
     }
 
+    //Limpa a memória inteira
     public void clearData(){
 
         for (int k = 0; k < memoria.length; k++) {
@@ -146,6 +141,31 @@ public class mv{
     // Em seguida chama o método que trata as funções dos opcodes que está logo
     // acima
 
+    //Método que realiza a execução de todas as partes (se houver algo para executar), cada uma sendo realizada 20 vezes.
+    public void runAll(){
+
+        while(c1.getSafe() + c2.getSafe() + c3.getSafe() + c4.getSafe() != 8000 ){ 
+
+            if(c1.getOcup() == 1){
+                runSeparate(1);
+            } else c1.setSafe(2000);
+
+            if(c2.getOcup() == 1){
+                runSeparate(2);
+            } else c2.setSafe(2000);
+
+            if(c3.getOcup() == 1){
+                runSeparate(3);
+            } else c3.setSafe(2000);
+
+            if(c4.getOcup() == 1){
+                runSeparate(4);
+            } else c4.setSafe(2000);
+        }
+
+    }
+
+    //Método que realiza a execução de uma partição de memória 20x ou até ela acabar
     public void runSeparate(int part){
         
         erase();
@@ -199,7 +219,7 @@ public class mv{
                 }
                 
                 
-                while (PC != 2000 && count < 20) {
+                while (PC != 2000 && count <= 20) {
                     
                     System.out.println(PC);
                     System.out.println(count);
@@ -265,22 +285,10 @@ public class mv{
                         c4.setr7(regis[7]);
                     } break;
                 }
-
-
-
-
-                //System.out.println("\n");
-                //System.out.println("Resposta na memória: " + count);
-                //System.out.println("\n");
-                //for (int i = programa.size(); i < memoria.length; i++) {
-                 //   if (memoria[i].parametro != -99) {
-                 //       System.out.println(memoria[i].getParametro());
-                  //  }
-              //  }
     }
 
     public void erase(){
-        count = 0;
+        count = 1;
         PC = 0;
     }
 
@@ -415,6 +423,7 @@ public class mv{
 
     }
 
+    //"Traduz" a memória para a partição desejada
     public int tradutor(int num, int part){
 
         int toma = 0;
@@ -437,7 +446,7 @@ public class mv{
             } break;
 
             default:{
-                System.out.println("vai toma no cu");
+                System.out.println("Erro");
             }
         }
 
@@ -517,12 +526,19 @@ public class mv{
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
 
+        //Verifica se o programa não é maior que a partição
+        if(programa.size() > 256){
+            programa.clear();
+            System.out.println("Seu programa contém mais de 256 linhas.");
+        }
+
         // População da Memoria com os objetos criados no ArrayList
         switch(part){
             case 1:{
                 for (int i = 0; i < programa.size(); i++) {
                     memoria[i] = programa.get(i);
                 }
+                c1.setOcup();
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 2:{
@@ -530,6 +546,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
+                c2.setOcup();
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 3:{
@@ -537,6 +554,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
+                c3.setOcup();
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 4:{
@@ -544,6 +562,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
+                c4.setOcup();
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             default:{

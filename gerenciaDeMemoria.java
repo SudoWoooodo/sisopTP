@@ -1,12 +1,11 @@
+//Esta calsse é utilizada para salvar as variaveis quando ele troca de programa que está executando.
+
 
 public class gerenciaDeMemoria{
 
-    private static final int size = 1024;
-    private static int ocupado = 0;
+    private int id, posInicial, posFinal, safe, r0, r1, r2, r3, r4, r5, r6, r7, ocupado;
 
-    private int id, posInicial, posFinal, safe, r0, r1, r2, r3, r4, r5, r6, r7;
-
-        public gerenciaDeMemoria(int id, int posInicial, int posFinal, int safe, int r0, int r1, int r2, int r3, int r4, int r5, int r6, int r7){
+        public gerenciaDeMemoria(int id, int posInicial, int posFinal, int safe, int r0, int r1, int r2, int r3, int r4, int r5, int r6, int r7, int ocupado){
             this.id = id;
             this.posInicial = posInicial;
             this.posFinal = posFinal;
@@ -18,6 +17,7 @@ public class gerenciaDeMemoria{
             this.r4 = r4;
             this.r5 = r6;
             this.r7 = r7;
+            this.ocupado = ocupado;
         }
 
         public int getId(){
@@ -102,6 +102,14 @@ public class gerenciaDeMemoria{
 
         public void setr7(int x){
             this.r7 = x;
+        }
+
+        public int getOcup(){
+            return this.ocupado;
+        }
+
+        public void setOcup(){
+            this.ocupado = 1;
         }
     }
 
