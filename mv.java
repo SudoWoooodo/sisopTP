@@ -70,6 +70,16 @@ public class mv{
 
             regis[i] = 0;
         }
+
+        c1.setOcup(0);
+        c1.setSafe(0);
+        c2.setOcup(0);
+        c2.setSafe(0);
+        c3.setOcup(0);
+        c3.setSafe(0);
+        c4.setOcup(0);
+        c4.setSafe(0);
+        
     }
 
     // Metodo utilizado para identificar a chamar a função correta de acordo com seu
@@ -549,7 +559,7 @@ public class mv{
                 for (int i = 0; i < programa.size(); i++) {
                     memoria[i] = programa.get(i);
                 }
-                c1.setOcup();
+                c1.setOcup(1);
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 2:{
@@ -557,7 +567,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
-                c2.setOcup();
+                c2.setOcup(1);
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 3:{
@@ -565,7 +575,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
-                c3.setOcup();
+                c3.setOcup(1);
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             case 4:{
@@ -573,7 +583,7 @@ public class mv{
                     int c = tradutor(i, part);
                     memoria[c] = programa.get(i);
                 }
-                c4.setOcup();
+                c4.setOcup(1);
                 System.out.println("Arquivo carregado na memoria.");
             } break;
             default:{

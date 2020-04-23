@@ -108,8 +108,8 @@ public class gerenciaDeMemoria{
             return this.ocupado;
         }
 
-        public void setOcup(){
-            this.ocupado = 1;
+        public void setOcup(int x){
+            this.ocupado = x;
         }
     }
 
