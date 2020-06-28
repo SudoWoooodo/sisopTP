@@ -1,5 +1,4 @@
-//Esta calsse é utilizada para salvar as variaveis quando ele troca de programa que está executando.
-
+package src;
 
 public class gerenciaDeMemoria{
 
@@ -15,7 +14,8 @@ public class gerenciaDeMemoria{
             this.r2 = r2;
             this.r3 = r3;
             this.r4 = r4;
-            this.r5 = r6;
+            this.r5 = r5;
+            this.r6 = r6;
             this.r7 = r7;
             this.ocupado = ocupado;
         }

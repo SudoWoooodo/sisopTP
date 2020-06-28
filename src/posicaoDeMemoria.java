@@ -1,3 +1,5 @@
+package src;
+
 // Autores: Pedro Portella, Rafael Resende e Lucas Tashan
 
 // Classe do objeto de posição de memória
