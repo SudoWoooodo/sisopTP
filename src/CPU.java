@@ -2,7 +2,6 @@ package src;
 
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
-
 import src.GerenteDeMemoria;
 
 public class CPU implements Runnable {
@@ -12,37 +11,102 @@ public class CPU implements Runnable {
     private int regisAux1;
     private String func;
     private int count;
-    private Semaphore Carlos;
+    private Semaphore Semaforo6;
+    public static volatile int i = 0;
 
-    public CPU(Semaphore Carlinhos) {
-        Carlos = Carlinhos;
+    public CPU(Semaphore semaforo) {
+        Semaforo6 = semaforo;
     }
 
     public void run() {
 
         while (true) {
-            for (int i = 0; i < 4; i++) {
-                if (GerenteDeMemoria.Kleber.getOcup(i) && APp.FlagCPU == false) {
-                    APp.FlagCPU = true;
-                    try {
-                        Carlos.acquire();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if(runSeparate(i)){
-                        GerenteDeMemoria.cheio = false;
-                    }
-                    APp.FlagCPU = false;
-                    Carlos.release();
+            if (GerenteDeMemoria.Particao.getOcup(0) && App.FlagCPU == false && i == 0) {
+                App.FlagCPU = true;
+                try {
+                    Semaforo6.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (runSeparate(0)) {
+                    GerenteDeMemoria.cheio = false;
+                    GerenteDeMemoria.Particao.setOcup(i);
+                    App.FlagCPU = false;
+                    i++;
+                } else {
+                    i++;
+                    App.FlagCPU = false;
                 }
 
+                Semaforo6.release();
             }
+
+            if (GerenteDeMemoria.Particao.getOcup(1) && App.FlagCPU == false && i == 1) {
+                App.FlagCPU = true;
+                try {
+                    Semaforo6.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (runSeparate(1)) {
+                    GerenteDeMemoria.cheio = false;
+                    GerenteDeMemoria.Particao.setOcup(i);
+                    App.FlagCPU = false;
+                    i++;
+                } else {
+                    App.FlagCPU = false;
+                    i++;
+                }
+
+                Semaforo6.release();
+            }
+
+            if (GerenteDeMemoria.Particao.getOcup(2) && App.FlagCPU == false && i == 2) {
+                App.FlagCPU = true;
+                try {
+                    Semaforo6.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (runSeparate(2)) {
+                    GerenteDeMemoria.cheio = false;
+                    GerenteDeMemoria.Particao.setOcup(i);
+                    App.FlagCPU = false;
+                    i++;
+                } else {
+                    i++;
+                    App.FlagCPU = false;
+                }
+
+                Semaforo6.release();
+            }
+
+            if (GerenteDeMemoria.Particao.getOcup(3) && App.FlagCPU == false && i == 3) {
+                App.FlagCPU = true;
+                try {
+                    Semaforo6.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (runSeparate(3)) {
+                    GerenteDeMemoria.cheio = false;
+                    GerenteDeMemoria.Particao.setOcup(i);
+                    App.FlagCPU = false;
+                    i++;
+                } else {
+                    i++;
+                    App.FlagCPU = false;
+                }
+
+                Semaforo6.release();
+            }
+
         }
     }
 
     public boolean runSeparate(int part) {
 
-        pCB aux = GerenteDeMemoria.Kleber.getProgram(part);
+        pCB aux = GerenteDeMemoria.Particao.getProgram(part);
 
         GerenteDeMemoria.PC = aux.getSafe();
         GerenteDeMemoria.regis[0] = aux.getr0();
@@ -55,13 +119,15 @@ public class CPU implements Runnable {
         GerenteDeMemoria.regis[7] = aux.getr7();
 
         if (GerenteDeMemoria.PC == 2000) {
-            System.out.println("Thread Finished!");
+            System.out.println("Thread " + part + " Finished!");
             return true;
         }
 
+        count = 0;
+
         while (GerenteDeMemoria.PC != 2000 && count <= 20) {
 
-            System.out.println("PC: " + GerenteDeMemoria.PC);
+            System.out.println("Thread: " + part + " - PC: " + GerenteDeMemoria.PC);
             // System.out.println("i: " + count); //Descomente essa linha se quiser ver o
             // número de iterações por thread
             func = GerenteDeMemoria.memoria[GerenteDeMemoria.PC].opcode;
@@ -90,7 +156,7 @@ public class CPU implements Runnable {
         aux.setr6(GerenteDeMemoria.regis[6]);
         aux.setr7(GerenteDeMemoria.regis[7]);
 
-        GerenteDeMemoria.Kleber.setProgram(aux, part);
+        GerenteDeMemoria.Particao.setProgram(aux, part);
         return false;
 
     }
@@ -100,22 +166,22 @@ public class CPU implements Runnable {
         int toma = 0;
 
         switch (part) {
-            case 1: {
+            case 0: {
                 toma = num;
             }
                 break;
 
-            case 2: {
+            case 1: {
                 toma = num + 256;
             }
                 break;
 
-            case 3: {
+            case 2: {
                 toma = num + 512;
             }
                 break;
 
-            case 4: {
+            case 3: {
                 toma = num + 768;
             }
                 break;

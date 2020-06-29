@@ -10,11 +10,10 @@ public class GerenteDeMemoria {
 
     public static volatile posicaoDeMemoria[] memoria;
     public static volatile Integer[] regis = new Integer[8];
-    public static volatile Particoes Kleber;
+    public static volatile Particoes Particao;
     public static volatile boolean cheio;
     public static volatile int PC;
     public static volatile pCB Edmundo;
-    
 
     public GerenteDeMemoria() {
 
@@ -28,24 +27,25 @@ public class GerenteDeMemoria {
             regis[i] = 0;
         }
 
-        Kleber = new Particoes();
+        Particao = new Particoes();
         cheio = false;
 
     }
 
-    public void allocate(pCB Ricardinho) {
+    public void allocate(pCB pcb) {
 
         int k = 0;
         while (k < 4) {
-            if (Kleber.getOcup(k) != true) {
+            if (Particao.getOcup(k) != true) {
+                System.out.println("Salvando o exercício " + pcb.getId() + " na partição " + k);
+                int comeco = Particao.traduz(k);
+                Particao.setOcup(k);
+                Particao.setProgram(pcb, k);
+                pcb.setSafe(comeco);
 
-                int comeco = Kleber.traduz(k);
-                Kleber.setOcup(k);
-                Kleber.setProgram(Ricardinho, k);
+                for (int i = 0; i < pcb.getArray().size(); i++) {
 
-                for (int i = 0; i < Ricardinho.getRomario().size(); i++) {
-
-                    memoria[comeco] = (posicaoDeMemoria) Ricardinho.getRomario().get(i);
+                    memoria[comeco] = (posicaoDeMemoria) pcb.getArray().get(i);
                     comeco++;
                 }
                 break;
@@ -55,6 +55,7 @@ public class GerenteDeMemoria {
         }
 
         if (k == 3) {
+            System.out.println("Memória lotada!");
             cheio = true;
         }
 

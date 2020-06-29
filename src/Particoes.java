@@ -1,11 +1,11 @@
 package src;
 
 public class Particoes {
-    
+
     private boolean[] parts = new boolean[4];
     private pCB[] Programs = new pCB[4];
 
-    public Particoes(){
+    public Particoes() {
 
         this.parts[0] = false;
         this.parts[1] = false;
@@ -18,27 +18,37 @@ public class Particoes {
 
     }
 
-    public boolean getOcup(int part){
+    public boolean getOcup(int part) {
         return this.parts[part];
     }
 
-    public void setOcup(int part){
-        this.parts[part] = true;
+    public void setOcup(int part) {
+        if (this.parts[part] == true) {
+            this.parts[part] = false;
+        } else {
+            this.parts[part] = true;
+        }
     }
 
-    public pCB getProgram(int part){
+    public pCB getProgram(int part) {
         return this.Programs[part];
     }
 
-    public void setProgram(pCB program, int part){
+    public void setProgram(pCB program, int part) {
         this.Programs[part] = program;
     }
 
-    public int traduz(int part){
+    public int traduz(int part) {
 
-        if (part == 1) {return 255;}
-        if (part == 2) {return 512;}
-        if (part == 3) {return 768;}
+        if (part == 1) {
+            return 255;
+        }
+        if (part == 2) {
+            return 512;
+        }
+        if (part == 3) {
+            return 768;
+        }
         return 0;
     }
 

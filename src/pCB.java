@@ -7,9 +7,9 @@ public class pCB {
     private String id;
     private int safe;
     private int r0, r1, r2, r3, r4, r5, r6, r7;
-    private ArrayList romario;
+    private ArrayList array;
 
-    public pCB(String id, ArrayList ronaldo) {
+    public pCB(String id, ArrayList array) {
 
         this.id = id;
         this.safe = 0;
@@ -21,7 +21,7 @@ public class pCB {
         this.r5 = 0;
         this.r6 = 0;
         this.r7 = 0;
-        this.romario = ronaldo;
+        this.array = array;
 
     }
 
@@ -101,8 +101,8 @@ public class pCB {
         this.r7 = x;
     }
 
-    public ArrayList getRomario() {
-        return this.romario;
+    public ArrayList getArray() {
+        return this.array;
     }
 
     @Override

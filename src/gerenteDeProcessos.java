@@ -8,9 +8,9 @@ public class gerenteDeProcessos {
 
     private ArrayList listaDeProntos;
 
-    public gerenteDeProcessos(ArrayList Fernando) {
+    public gerenteDeProcessos(ArrayList array) {
 
-        listaDeProntos = Fernando;
+        listaDeProntos = array;
 
     }
 
@@ -68,19 +68,14 @@ public class gerenteDeProcessos {
 
             arq.close();
 
-            pCB Jamil = new pCB(Resposta, programa);
+            pCB PCB = new pCB(Resposta, programa);
 
-            listaDeProntos.add(Jamil);
+            listaDeProntos.add(PCB);
             System.out.println(listaDeProntos);
 
         } catch (IOException e) {
             System.err.printf("Erro na abertura do arquivo: %s.\n", e.getMessage());
         }
 
-    }
-
-    public synchronized ArrayList getLista() {
-
-        return this.listaDeProntos;
     }
 }

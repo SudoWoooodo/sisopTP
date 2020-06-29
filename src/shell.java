@@ -2,20 +2,18 @@ package src;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
-import src.APp;
-
+import src.App;
 
 public class shell implements Runnable {
 
     private gerenteDeProcessos GDP;
-    private Semaphore Klebinho;
+    private Semaphore Semaforo3;
 
+    public shell(ArrayList array, Semaphore semaforo) throws InterruptedException {
 
-    public shell(ArrayList Maicon, Semaphore Irineu) throws InterruptedException {
+        GDP = new gerenteDeProcessos(array);
+        Semaforo3 = semaforo;
 
-        GDP = new gerenteDeProcessos(Maicon);
-        Klebinho = Irineu;
-        
     }
 
     public void run() {
@@ -24,22 +22,22 @@ public class shell implements Runnable {
         int i = 0;
 
         while (i == 0) {
-            if (APp.Flag == true) {
+            if (App.Flag == true) {
                 try {
-                    Klebinho.acquire();
+                    Semaforo3.acquire();
                 } catch (InterruptedException Err) {
                 }
 
-                // verificaçao
-                System.out.println("Digite os comandos:");
+                System.out.println("Digite os comandos: ");
                 String Resposta = le.nextLine();
                 if (Resposta.equals("quit")) {
                     i++;
                 } else {
                     GDP.loadArquivo(Resposta);
-                    APp.Flag = false;
+                    App.Flag = false;
+                    App.FlagCPU = false;
                 }
-                Klebinho.release();
+                Semaforo3.release();
             }
 
         }
